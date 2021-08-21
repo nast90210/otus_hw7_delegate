@@ -1,4 +1,7 @@
 .vscode/*
 otus_hw7_delegate/obj/*
 otus_hw7_delegate_console/bin/*
-otus_hw7_delegate_console/obj*
+otus_hw7_delegate_console/obj/*
+.vs/*
+otus_hw7_delegate/bin/*
+.idea/
