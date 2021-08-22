@@ -1,26 +1,29 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
 
 namespace otus_hw7_delegate
 {
     public class DocumentsReceiver
     {
-        private delegate void DocumentsReadyHandler(string message);
-        private event DocumentsReadyHandler DocumentsReady;
+        public delegate void DocumentsReadyHandler(string message);
+        public event DocumentsReadyHandler DocumentsReady;
 
-        private delegate void TimedOutHandler(string message);
-        private event TimedOutHandler TimedOut;
+        public delegate void TimedOutHandler(string message);
+        public event TimedOutHandler TimedOut;
 
         private bool pasport, foto, zayav = false;
 
-        public void Start(string targetDirectory, double waitingInterval)
+        public async Task StartAsync(string targetDirectory, double waitingInterval)
         {
             var timer = new Timer(waitingInterval);
             timer.Elapsed += (o, args) => TimedOut?.Invoke("Time is out.");
-
+            timer.Start();
+            
             var fileSystemWatcher = new FileSystemWatcher(targetDirectory);
             fileSystemWatcher.Created+= OnCreated;
+            await Task.Run(() => fileSystemWatcher.WaitForChanged(WatcherChangeTypes.Created, (int)waitingInterval));
         }
 
         private void OnCreated(object sender, FileSystemEventArgs e)
